@@ -6,6 +6,7 @@
     "addName_PLEASEVERIFYTHESENTENCE": "Nome rapporto ##;## Nome pannello di controllo",
     "addName_PLEASEVERIFYTHESENTENCE_REFERENCE": "Add {name}",
     "itemSelected": {
+      "importReportDashboard_PLEASETRANSLATETHESENTENCE": "Import report/dashboard",
       "label": "elemento selezionato",
       "label-plural": "elementi selezionati",
       "addName_PLEASEVERIFYTHESENTENCE": "Addiziona",

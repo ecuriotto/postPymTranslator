@@ -55,7 +55,14 @@ function extractKeyValueFromString(inputString) {
   }
 }
 
+function promptUser(cleanKey, refValue, proposalValue) {
+  console.log(`Key: ${cleanKey}`);
+  console.log(`Reference: ${refValue}`);
+  if (proposalValue) console.log(`Proposal: ${proposalValue}`);
+}
+
 module.exports = {
   updateJSONValues,
   extractKeyValueFromString,
+  promptUser,
 };
