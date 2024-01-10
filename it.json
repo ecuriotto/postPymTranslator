@@ -4,6 +4,14 @@
     "add": "Aggiungere",
     "addACopy": "Aggiungere una copia",
     "addName_PLEASEVERIFYTHESENTENCE": "Nome rapporto ##;## Nome pannello di controllo",
-    "addName_PLEASEVERIFYTHESENTENCE_REFERENCE": "Add {name}"
+    "addName_PLEASEVERIFYTHESENTENCE_REFERENCE": "Add {name}",
+    "itemSelected": {
+      "label": "elemento selezionato",
+      "label-plural": "elementi selezionati",
+      "addName_PLEASEVERIFYTHESENTENCE": "Addiziona",
+      "addName_PLEASEVERIFYTHESENTENCE_REFERENCE": "Adding"
+    },
+    "less_PLEASEVERIFYTHESENTENCE": "è meno di",
+    "less_PLEASEVERIFYTHESENTENCE_REFERENCE": "Less"
   }
 }
