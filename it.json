@@ -1,0 +1,11 @@
+{
+  "alert": {
+    "activateInfo": "Per attivare aggiungere e-mail o sistema di destinazione",
+    "apply": "Applica i cambiamenti",
+    "form": {
+      "email": "Invia e-mail a",
+      "emailPlaceholder": "Separare gli indirizzi e-mail con i tasti invio o barra spaziatrice",
+      "emailThreshold": "È possibile aggiungere fino a 20 destinatari"
+    }
+  }
+}
