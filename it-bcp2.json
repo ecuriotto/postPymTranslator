@@ -64,27 +64,38 @@
           "ofTotalPercentage": "% delle istanze totali",
           "outliersNumber": "Istanze di nodo di flusso con anomalie"
         },
-        "title": "Risultati per il nodo di flusso \"{name}\"",
-        "variablesTable": "Tabella delle variabili significative comuni"
+        "title_PLEASETRANSLATETHESENTENCE": "Results for flow node \"{name}\"",
+        "variablesTable_PLEASEVERIFYTHESENTENCE": "Tabella delle variabili significative comuni",
+        "variablesTable_PLEASEVERIFYTHESENTENCE_REFERENCE": "Common significant variables"
       },
-      "info": "L'heatmap mostra l'incidenza delle maggiori anomalie basate sulla durata",
-      "label": "Analisi dei task",
-      "notFound": "Nessun valore anomalo trovato per il processo selezionato",
-      "onlyCompletedHint": "Nota: l\u0027analisi dei valori anomali viene eseguita solo sui nodi di flusso completati",
-      "result": "Numero di nodi di flusso che corrispondono al filtro: {count}",
+      "info_PLEASEVERIFYTHESENTENCE": "Questo download conterrà i primi {exportLimit} di {totalCount} record. Filtra i dati o chiedi all\u0027amministratore di aumentare il limite di sistema per risolvere il problema. ##;## Una raccolta consente di limitare l\u0027accesso ai dati, aggiungere utenti e creare avvisi sui report numerici. ##;## Visualizzazione di \u003cb\u003e{firstRowIndex}\u003c/b\u003e in \u003cb\u003e{lastRowIndex}\u003c/b\u003e di \u003cb\u003e{totalRows}\u003c/b\u003e ##;## L\u0027heatmap mostra l\u0027incidenza dei valori anomali più elevati in base alla durata. Calcolato dallo z-score. ##;## Visualizza solo le istanze in cui... ##;## Consenti a Camunda Optimize di inviare statistiche di utilizzo anonime. Utilizziamo queste informazioni per fornirti un\u0027esperienza del prodotto stabile e migliorata nell\u0027ambiente che stai utilizzando. Ciò consente a Camunda di raccogliere informazioni sulla versione del prodotto e sull\u0027ambiente tecnico che stai utilizzando e su come lo stai utilizzando.",
+      "info_PLEASEVERIFYTHESENTENCE_REFERENCE": "Heatmap displays the incidence of higher outliers based on duration.",
+      "label_PLEASEVERIFYTHESENTENCE": "Trimestre ##;## Avviso ##;## Etichetta dell\u0027asse ##;## Istanza di processo Part ##;## Giorno ##;## trilione ##;## Nodo di flusso ##;## Visualizzazione ##;## esempio ##;## Utente ##;## Anno ##;## Incidente ##;## Analisi dei valori anomali ##;## quintilione ##;## miliardo ##;## quadrilione ##;## millisecondo ##;## Filtri ##;## Mese ##;## Settimana ##;## mille ##;## Pannello di controllo ##;## Visualizzazione dei dati da {count} istanza. ##;## secondo ##;## milione ##;## Decisione ##;## Valore anomalo ##;## Eventi esterni acquisiti ##;## Obiettivi temporali ##;## Istanza di processo ##;## Visualizzazione dei dati dalla valutazione {count}. ##;## Raggruppa per ##;## Attività utente ##;## Valore obiettivo ##;## Gruppo di utenti ##;## Ora ##;## elemento selezionato ##;## Processo ##;## Tenant ##;## Rapporto ##;## processo ##;## Aggiungi un filtro ##;## Versione specifica ##;## Raccolta ##;## Processo basato sugli eventi ##;## Versione ##;## minuto ##;## Definizione",
+      "label_PLEASEVERIFYTHESENTENCE_REFERENCE": "Task analysis",
+      "notFound_PLEASEVERIFYTHESENTENCE": "nessun risultato trovato ##;## Nessun valore anomalo trovato per il processo selezionato",
+      "notFound_PLEASEVERIFYTHESENTENCE_REFERENCE": "No outliers found for the selected process",
+      "onlyCompletedHint_PLEASEVERIFYTHESENTENCE": "Nota: l\u0027analisi dei valori anomali viene eseguita solo sui nodi di flusso completati",
+      "onlyCompletedHint_PLEASEVERIFYTHESENTENCE_REFERENCE": "Note: The task analysis is performed on completed flow nodes only",
+      "result_PLEASETRANSLATETHESENTENCE": "Number of flow node instances matching the filter: {count}",
       "table": {
-        "flowNodeName": "Nome del nodo di flusso",
-        "heading": "Anomalie",
-        "outliers": "Numero di istanze anomale"
+        "flowNodeName_PLEASETRANSLATETHESENTENCE": "Flow node name",
+        "heading_PLEASEVERIFYTHESENTENCE": "Istanze di processo ##;## Incidenti ##;## Tenants ##;## quadrilioni ##;## miliardi ##;## secondi ##;## mille ##;## Visualizzazione dei dati da {count} istanze. ##;## settimane ##;## millisecondi ##;## anni ##;## quintilioni ##;## Raccolte ##;## Gruppi di utenti ##;## Versioni specifiche ##;## processi ##;## Visualizzazione dei dati da {count} valutazioni. ##;## Pannelli di controllo ##;## elementi selezionati ##;## minuti ##;## istanze ##;## Utenti ##;## trilioni ##;## giorni ##;## Trimestri ##;## Avvisi ##;## ore ##;## Definizioni ##;## mesi ##;## Valori anomali ##;## Decisioni ##;## Processi ##;## Nodi di flusso ##;## milioni ##;## Rapporti ##;## Attività utente",
+        "heading_PLEASEVERIFYTHESENTENCE_REFERENCE": "Outliers",
+        "outliers_PLEASEVERIFYTHESENTENCE": "Numero di istanze anomale",
+        "outliers_PLEASEVERIFYTHESENTENCE_REFERENCE": "Flow node instances with outliers"
       },
       "tooltip": {
         "outlier": {
-          "label-plural": "Anomalie",
-          "label": "Anomalia"
+          "label-plural_PLEASEVERIFYTHESENTENCE": "Istanze di processo ##;## Incidenti ##;## Tenants ##;## quadrilioni ##;## miliardi ##;## secondi ##;## mille ##;## Visualizzazione dei dati da {count} istanze. ##;## settimane ##;## millisecondi ##;## anni ##;## quintilioni ##;## Raccolte ##;## Gruppi di utenti ##;## Versioni specifiche ##;## processi ##;## Visualizzazione dei dati da {count} valutazioni. ##;## Pannelli di controllo ##;## elementi selezionati ##;## minuti ##;## istanze ##;## Utenti ##;## trilioni ##;## giorni ##;## Trimestri ##;## Avvisi ##;## ore ##;## Definizioni ##;## mesi ##;## Valori anomali ##;## Decisioni ##;## Processi ##;## Nodi di flusso ##;## milioni ##;## Rapporti ##;## Attività utente",
+          "label-plural_PLEASEVERIFYTHESENTENCE_REFERENCE": "Outliers",
+          "label_PLEASEVERIFYTHESENTENCE": "Trimestre ##;## Avviso ##;## Etichetta dell\u0027asse ##;## Istanza di processo Part ##;## Giorno ##;## trilione ##;## Nodo di flusso ##;## Visualizzazione ##;## esempio ##;## Utente ##;## Anno ##;## Incidente ##;## Analisi dei valori anomali ##;## quintilione ##;## miliardo ##;## quadrilione ##;## millisecondo ##;## Filtri ##;## Mese ##;## Settimana ##;## mille ##;## Pannello di controllo ##;## Visualizzazione dei dati da {count} istanza. ##;## secondo ##;## milione ##;## Decisione ##;## Valore anomalo ##;## Eventi esterni acquisiti ##;## Obiettivi temporali ##;## Istanza di processo ##;## Visualizzazione dei dati dalla valutazione {count}. ##;## Raggruppa per ##;## Attività utente ##;## Valore obiettivo ##;## Gruppo di utenti ##;## Ora ##;## elemento selezionato ##;## Processo ##;## Tenant ##;## Rapporto ##;## processo ##;## Aggiungi un filtro ##;## Versione specifica ##;## Raccolta ##;## Processo basato sugli eventi ##;## Versione ##;## minuto ##;## Definizione",
+          "label_PLEASEVERIFYTHESENTENCE_REFERENCE": "Outlier"
         },
         "tookDuration": {
-          "plural": "durata di",
-          "singular": "durata di"
+          "plural_PLEASEVERIFYTHESENTENCE": "{count} istanze hanno impiegato il {percentage}% in più rispetto alla media. ##;## nelle ultime ##;## ha avuto una durata di",
+          "plural_PLEASEVERIFYTHESENTENCE_REFERENCE": "took a duration of",
+          "singular_PLEASEVERIFYTHESENTENCE": "{count} istanza ha impiegato il {percentage}% in più rispetto alla media. ##;## ha avuto una durata di",
+          "singular_PLEASEVERIFYTHESENTENCE_REFERENCE": "took a duration of"
         },
         "zScore_PLEASETRANSLATETHESENTENCE": "Outliers are calculated based on z-score. Z-score is a statistical measurement that describes a value\u0027s relationship to the mean of a group of values. Z-score is measured in terms of standard deviations from the mean."
       },

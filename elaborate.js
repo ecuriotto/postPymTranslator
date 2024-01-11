@@ -93,12 +93,20 @@ function elaborate() {
   inputStream.on('data', (chunk) => {
     const lines = chunk.split('\n');
     for (const line of lines) {
-      if (line.includes(VERIFY) && !exitFlag) {
+      if (line.includes(VERIFY) && !line.includes(REFERENCE) && !exitFlag) {
+        const keyValues = extractKeyValueFromString(line);
+        proposalValue = keyValues.value;
+        if (proposalValue && proposalValue.length > 0) {
+          proposalValue = proposalValue.substring(0, 131);
+        }
+        exitFlag = keyValues.exitFlag;
+        verifySentenceFound = true;
+      } else if (line.includes(REFERENCE) && !exitFlag) {
         if (!verifySentenceFound) {
-          const keyValues = extractKeyValueFromString(line);
-          proposalValue = keyValues.value;
-          exitFlag = keyValues.exitFlag;
-          verifySentenceFound = true;
+          console.error(
+            `The line ${line} doesn't have a related ${VERIFY}. Correct the file and try again`
+          );
+          exitFlag = true;
         } else {
           processLine(line, proposalValue, outputStream);
           proposalValue = '';
