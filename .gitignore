@@ -1,3 +1,5 @@
 node_modules
 it_bck.json
-updated_it.json
+updated*.json*
+it-orig.json
+it.json

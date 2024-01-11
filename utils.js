@@ -1,4 +1,5 @@
 const readlineSync = require('readline-sync');
+const fs = require('fs');
 
 function updateJSONValues(obj) {
   const updatedPairs = [];
@@ -43,15 +44,19 @@ function updateJSONValues(obj) {
 }
 
 function extractKeyValueFromString(inputString) {
-  const regex = /^\s*"([^"]+)"\s*:\s*"([^"]+)"\s*(?=,|$)/;
+  const regex = /^\s*"([^"]+)"\s*:\s*"((?:\\"|[^"])*)"\s*(?=,|$)/;
   const match = inputString.match(regex);
 
   if (match) {
     const key = match[1];
     const value = match[2];
-    return { key, value };
+    return { key, value, exitFlag: false };
   } else {
-    return null; // Return null if no match found
+    return {
+      key: '**ERROR write "exit" to save your work**',
+      value: '**ERROR write "exit" to save your work**',
+      exitFlag: true,
+    };
   }
 }
 
@@ -59,17 +64,44 @@ function promptUser(currentOccurrence, totalOccurrences, cleanKey, refValue, pro
   const colors = {
     green: '\x1b[32m',
     yellow: '\x1b[33m',
-    blue: '\x1b[34m',
+    orange: '\x1b[38;5;208m', // Replace 'blue' with 'orange'
     reset: '\x1b[0m',
   };
 
-  console.log(`**********************************************************`);
-  console.log(
-    `Occurrence: ${currentOccurrence}/${totalOccurrences} - To exit and save just write "exit"`
+  const occurrenceText = `Occurrence: ${currentOccurrence}/${totalOccurrences} - To exit and save just write "exit"`;
+  const keyText = `Key: ${colors.green}${cleanKey}${colors.reset}`;
+  const referenceText = `Reference: ${colors.yellow}${refValue}${colors.reset}`;
+  const proposalText = proposalValue
+    ? `Proposal: ${colors.orange}${proposalValue}${colors.reset}`
+    : '';
+
+  // Find the length of the longest string
+  const maxLength = Math.max(
+    occurrenceText.length,
+    keyText.length,
+    referenceText.length,
+    proposalText.length
   );
-  console.log(`Key: ${colors.green}${cleanKey}${colors.reset}`);
-  console.log(`Reference: ${colors.yellow}${refValue}${colors.reset}`);
-  if (proposalValue) console.log(`Proposal: ${colors.blue}${proposalValue}${colors.reset}`);
+
+  const separator = '+'.padEnd(maxLength, '-');
+
+  const occurrenceLine = `| ${occurrenceText.padEnd(maxLength - 4)} |`;
+  const keyLine = `| ${keyText.padEnd(maxLength + 7 - 1)}|`;
+  const referenceLine = `| ${referenceText.padEnd(maxLength + 7 - 1)}|`;
+  const proposalLine = proposalValue ? `| ${proposalText.padEnd(maxLength + 13 - 1)}|` : '';
+
+  console.log(`\n`);
+  console.log(separator);
+  console.log(occurrenceLine);
+  console.log(separator);
+  console.log(keyLine);
+  console.log(separator);
+  console.log(referenceLine);
+  console.log(separator);
+  if (proposalValue) {
+    console.log(proposalLine);
+    console.log(separator);
+  }
 }
 
 function printHelp() {
@@ -101,8 +133,17 @@ function getInputFilePath() {
 }
 
 function getOutputFilePath() {
-  return process.argv[3] || 'updated-' + process.argv[2] || 'updated-it.json'; // Default filename if not provided
+  return process.argv[3] || 'updated-' + (process.argv[2] || 'it.json'); // Default filename if not provided
 }
+
+function backupFile(filePath) {
+  const timestamp = new Date().toISOString().replace(/[-:]/g, ''); // Generate a timestamp for the backup
+  const backupFilePath = `${filePath}.backup.${timestamp}`;
+
+  fs.copyFileSync(filePath, backupFilePath);
+  console.log(`Backup created: ${backupFilePath}`);
+}
+
 module.exports = {
   updateJSONValues,
   extractKeyValueFromString,
@@ -111,4 +152,5 @@ module.exports = {
   validateArgs,
   getInputFilePath,
   getOutputFilePath,
+  backupFile,
 };

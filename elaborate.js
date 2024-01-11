@@ -7,6 +7,7 @@ const {
   validateArgs,
   getInputFilePath,
   getOutputFilePath,
+  backupFile,
 } = require('./utils');
 
 function elaborate() {
@@ -24,6 +25,11 @@ function elaborate() {
   if (!fs.existsSync(inputFilePath)) {
     console.error(`Input file not found: ${inputFilePath}`);
     return;
+  }
+
+  // Check if the output file already exists
+  if (fs.existsSync(outputFilePath)) {
+    backupFile(outputFilePath);
   }
 
   const countFile = fs.readFileSync(inputFilePath, { encoding: 'utf8' });
@@ -49,18 +55,24 @@ function elaborate() {
 
   function processLine(line, proposalValue, outputStream) {
     currentOccurrence++;
-    const { key: refKey, value: refValue } = extractKeyValueFromString(line);
+    let {
+      key: refKey,
+      value: refValue,
+      exitFlagError: exitFlagError,
+    } = extractKeyValueFromString(line);
     const cleanKey = refKey.replace(REFERENCE, '').replace(TRANSLATE, '');
+    exitFlag = exitFlagError; //If there's an error in the key/val extraction it's reported
     promptUser(currentOccurrence, totalOccurrences, cleanKey, refValue, proposalValue);
     let newValue;
     if (proposalValue) {
+      //if TRANSLATED there's no proposal
       newValue = readlineSync.question(
         `Press "Enter" to accept the proposal or write a new value:`
       );
     } else {
       newValue = readlineSync.question(`Enter a translation for ${cleanKey}: `);
     }
-    if (newValue.toLowerCase() === EXIT_KEYWORD) {
+    if (newValue.toLowerCase() === EXIT_KEYWORD || exitFlag) {
       console.log('Exiting at user request...');
       exitFlag = true;
       outputStream.write(`${line}\n`);
@@ -85,6 +97,7 @@ function elaborate() {
         if (!verifySentenceFound) {
           const keyValues = extractKeyValueFromString(line);
           proposalValue = keyValues.value;
+          exitFlag = keyValues.exitFlag;
           verifySentenceFound = true;
         } else {
           processLine(line, proposalValue, outputStream);
