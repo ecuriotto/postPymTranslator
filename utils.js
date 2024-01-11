@@ -55,14 +55,60 @@ function extractKeyValueFromString(inputString) {
   }
 }
 
-function promptUser(cleanKey, refValue, proposalValue) {
-  console.log(`Key: ${cleanKey}`);
-  console.log(`Reference: ${refValue}`);
-  if (proposalValue) console.log(`Proposal: ${proposalValue}`);
+function promptUser(currentOccurrence, totalOccurrences, cleanKey, refValue, proposalValue) {
+  const colors = {
+    green: '\x1b[32m',
+    yellow: '\x1b[33m',
+    blue: '\x1b[34m',
+    reset: '\x1b[0m',
+  };
+
+  console.log(`**********************************************************`);
+  console.log(
+    `Occurrence: ${currentOccurrence}/${totalOccurrences} - To exit and save just write "exit"`
+  );
+  console.log(`Key: ${colors.green}${cleanKey}${colors.reset}`);
+  console.log(`Reference: ${colors.yellow}${refValue}${colors.reset}`);
+  if (proposalValue) console.log(`Proposal: ${colors.blue}${proposalValue}${colors.reset}`);
 }
 
+function printHelp() {
+  console.log('Usage: node app.js [inputFile] [outputFile]');
+  console.log('Example: node app.js it.json ');
+  console.log(
+    `
+    The program will prompt for translations and create an updated JSON file.
+    You can exit when you want just writing "exit" when prompted for a translation, your work will be saved.`
+  );
+}
+function validateArgs() {
+  if (process.argv.length > 4) {
+    printHelp();
+    process.exit(1);
+  }
+  if (
+    process.argv.length > 1 &&
+    typeof process.argv[2] === 'string' &&
+    (process.argv[2] === '-h' || process.argv[2].includes('help'))
+  ) {
+    printHelp();
+    process.exit(1);
+  }
+}
+
+function getInputFilePath() {
+  return process.argv[2] || 'it.json'; // Default filename if not provided
+}
+
+function getOutputFilePath() {
+  return process.argv[3] || 'updated-' + process.argv[2] || 'updated-it.json'; // Default filename if not provided
+}
 module.exports = {
   updateJSONValues,
   extractKeyValueFromString,
   promptUser,
+  printHelp,
+  validateArgs,
+  getInputFilePath,
+  getOutputFilePath,
 };
