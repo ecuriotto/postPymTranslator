@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/translate": "^8.0.3",
     "inquirer": "^9.2.12",
     "readline-sync": "^1.4.10"
   }

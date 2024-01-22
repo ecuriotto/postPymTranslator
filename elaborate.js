@@ -10,7 +10,7 @@ const {
   backupFile,
 } = require('./utils');
 
-function elaborate() {
+async function elaborate() {
   const VERIFY = '_PLEASEVERIFYTHESENTENCE';
   const REFERENCE = '_PLEASEVERIFYTHESENTENCE_REFERENCE';
   const TRANSLATE = '_PLEASETRANSLATETHESENTENCE';
@@ -32,7 +32,7 @@ function elaborate() {
     backupFile(outputFilePath);
   }
 
-  const countFile = fs.readFileSync(inputFilePath, { encoding: 'utf8' });
+  const countFile = fs.readFileSync(inputFilePath, {encoding: 'utf8'});
   const lines = countFile.split('\n');
 
   for (const line of lines) {
@@ -47,13 +47,13 @@ function elaborate() {
   let totalOccurrences = totalVerifyOccurrences + totalTranslateOccurrences;
   let currentOccurrence = 0;
 
-  const inputStream = fs.createReadStream(inputFilePath, { encoding: 'utf8' });
-  const outputStream = fs.createWriteStream(outputFilePath, { encoding: 'utf8' });
+  const inputStream = fs.createReadStream(inputFilePath, {encoding: 'utf8'});
+  const outputStream = fs.createWriteStream(outputFilePath, {encoding: 'utf8'});
 
   let verifySentenceFound = false;
   let proposalValue;
 
-  function processLine(line, proposalValue, outputStream) {
+  async function processLine(line, proposalValue, outputStream) {
     currentOccurrence++;
     let {
       key: refKey,
@@ -62,7 +62,13 @@ function elaborate() {
     } = extractKeyValueFromString(line);
     const cleanKey = refKey.replace(REFERENCE, '').replace(TRANSLATE, '');
     exitFlag = exitFlagError; //If there's an error in the key/val extraction it's reported
-    promptUser(currentOccurrence, totalOccurrences, cleanKey, refValue, proposalValue);
+    const useless = await promptUser(
+      currentOccurrence,
+      totalOccurrences,
+      cleanKey,
+      refValue,
+      proposalValue
+    );
     let newValue;
     if (proposalValue) {
       //if TRANSLATED there's no proposal
@@ -88,11 +94,17 @@ function elaborate() {
     let outputLine = line.replace(REFERENCE, '').replace(TRANSLATE, '');
     outputLine = outputLine.replace(refValue, userTranslation);
     outputStream.write(`${outputLine}\n`);
+    return;
   }
 
-  inputStream.on('data', (chunk) => {
+  inputStream.on('data', async (chunk) => {
+    await processData(chunk, outputStream);
+  });
+
+  async function processData(chunk, outputStream) {
     const lines = chunk.split('\n');
     for (const line of lines) {
+      //console.log(line);
       if (line.includes(VERIFY) && !line.includes(REFERENCE) && !exitFlag) {
         const keyValues = extractKeyValueFromString(line);
         proposalValue = keyValues.value;
@@ -108,17 +120,17 @@ function elaborate() {
           );
           exitFlag = true;
         } else {
-          processLine(line, proposalValue, outputStream);
+          await processLine(line, proposalValue, outputStream);
           proposalValue = '';
           verifySentenceFound = false;
         }
       } else if (line.includes(TRANSLATE) && !exitFlag) {
-        processLine(line, '', outputStream);
+        await processLine(line, '', outputStream);
       } else {
         outputStream.write(`${line}\n`);
       }
     }
-  });
+  }
 
   inputStream.on('end', () => {
     outputStream.end();
@@ -132,6 +144,13 @@ function elaborate() {
   outputStream.on('error', (err) => {
     console.error('Error writing to the file:', err);
   });
+
+  try {
+    const fileContent = fs.readFileSync(inputFilePath, 'utf8');
+    await processData(fileContent, outputStream);
+  } catch (error) {
+    console.error('Error reading the file:', error);
+  }
 }
 
 // Call the function with the path to your JSON file

@@ -1,5 +1,6 @@
 const readlineSync = require('readline-sync');
 const fs = require('fs');
+const GoogleTranslateClient = require('./googleTranslateClient');
 
 function updateJSONValues(obj) {
   const updatedPairs = [];
@@ -21,9 +22,9 @@ function updateJSONValues(obj) {
             'Press "Enter" to keep the current value or enter a new value: '
           );
           if (newValue.trim()) {
-            updatedPairs.push({ key: cleanKey, value: newValue.trim() });
+            updatedPairs.push({key: cleanKey, value: newValue.trim()});
           } else {
-            updatedPairs.push({ key: cleanKey, value: tempValue });
+            updatedPairs.push({key: cleanKey, value: tempValue});
           }
         } else {
           console.error(
@@ -38,7 +39,7 @@ function updateJSONValues(obj) {
     }
   }
 
-  updatedPairs.forEach(({ key, value }) => {
+  updatedPairs.forEach(({key, value}) => {
     obj[key] = value;
   });
 }
@@ -50,7 +51,7 @@ function extractKeyValueFromString(inputString) {
   if (match) {
     const key = match[1];
     const value = match[2];
-    return { key, value, exitFlag: false };
+    return {key, value, exitFlag: false};
   } else {
     return {
       key: '**ERROR write "exit" to save your work**',
@@ -60,7 +61,7 @@ function extractKeyValueFromString(inputString) {
   }
 }
 
-function promptUser(currentOccurrence, totalOccurrences, cleanKey, refValue, proposalValue) {
+async function promptUser(currentOccurrence, totalOccurrences, cleanKey, refValue, proposalValue) {
   const colors = {
     green: '\x1b[32m',
     yellow: '\x1b[33m',
@@ -71,9 +72,14 @@ function promptUser(currentOccurrence, totalOccurrences, cleanKey, refValue, pro
   const occurrenceText = `Occurrence: ${currentOccurrence}/${totalOccurrences} - To exit and save just write "exit"`;
   const keyText = `Key: ${colors.green}${cleanKey}${colors.reset}`;
   const referenceText = `Reference: ${colors.yellow}${refValue}${colors.reset}`;
+  //const translatedTextArr = await GoogleTranslateClient.translateText(referenceText, 'it');
+  const translatedTextArr = await GoogleTranslateClient.translateText('hello world', 'it');
+  /*
   const proposalText = proposalValue
     ? `Proposal: ${colors.orange}${proposalValue}${colors.reset}`
     : '';
+  */
+  const proposalText = `${colors.orange}${translatedTextArr[0]}${colors.reset}`;
 
   // Find the length of the longest string
   const maxLength = Math.max(
@@ -83,6 +89,7 @@ function promptUser(currentOccurrence, totalOccurrences, cleanKey, refValue, pro
     proposalText.length
   );
 
+  console.log('dopo il breakpoint');
   const separator = '+'.padEnd(maxLength, '-');
 
   const occurrenceLine = `| ${occurrenceText.padEnd(maxLength - 4)} |`;
