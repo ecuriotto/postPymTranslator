@@ -1,6 +1,4 @@
 node_modules
-it_bck.json
-updated*.json*
-it-orig.json
-it.json
 serviceAccount/service-account.json
+/data/*
+!/data/it-sample.json

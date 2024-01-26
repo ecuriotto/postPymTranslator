@@ -1,16 +1,14 @@
 const fs = require('fs');
 const readlineSync = require('readline-sync');
 
-const {
-  extractKeyValueFromString,
-  promptUser,
-  validateArgs,
-  getInputFilePath,
-  getOutputFilePath,
-  backupFile,
-} = require('./utils');
+const {extractKeyValueFromString, backupFile} = require('./utils');
 
-async function elaborate() {
+let language = 'it';
+let inputFilePath = '../data/it-sample.json';
+let outputFilePath = '../data/it-updated.json';
+let dictFilePath = '../data/dict-it.json';
+
+async function translate() {
   const VERIFY = '_PLEASEVERIFYTHESENTENCE';
   const REFERENCE = '_PLEASEVERIFYTHESENTENCE_REFERENCE';
   const TRANSLATE = '_PLEASETRANSLATETHESENTENCE';
@@ -19,9 +17,6 @@ async function elaborate() {
   let totalVerifyOccurrences = 0;
   let totalTranslateOccurrences = 0;
 
-  validateArgs();
-  const inputFilePath = getInputFilePath();
-  const outputFilePath = getOutputFilePath();
   if (!fs.existsSync(inputFilePath)) {
     console.error(`Input file not found: ${inputFilePath}`);
     return;
@@ -31,6 +26,12 @@ async function elaborate() {
   if (fs.existsSync(outputFilePath)) {
     backupFile(outputFilePath);
   }
+  if (!fs.existsSync(dictFilePath)) {
+    console.error(`dict file not found: ${dictFilePath}. Run node createDict.js`);
+    return;
+  }
+  const dictFileContent = fs.readFileSync(dictFilePath, 'utf8');
+  const dictObject = JSON.parse(dictFileContent);
 
   const countFile = fs.readFileSync(inputFilePath, {encoding: 'utf8'});
   const lines = countFile.split('\n');
@@ -51,9 +52,8 @@ async function elaborate() {
   const outputStream = fs.createWriteStream(outputFilePath, {encoding: 'utf8'});
 
   let verifySentenceFound = false;
-  let proposalValue;
 
-  async function processLine(line, proposalValue, outputStream) {
+  async function processLine(line, outputStream) {
     currentOccurrence++;
     let {
       key: refKey,
@@ -62,15 +62,9 @@ async function elaborate() {
     } = extractKeyValueFromString(line);
     const cleanKey = refKey.replace(REFERENCE, '').replace(TRANSLATE, '');
     exitFlag = exitFlagError; //If there's an error in the key/val extraction it's reported
-    const useless = await promptUser(
-      currentOccurrence,
-      totalOccurrences,
-      cleanKey,
-      refValue,
-      proposalValue
-    );
+    const proposalText = await promptUser(currentOccurrence, totalOccurrences, cleanKey, refValue);
     let newValue;
-    if (proposalValue) {
+    if (proposalText) {
       //if TRANSLATED there's no proposal
       newValue = readlineSync.question(
         `Press "Enter" to accept the proposal or write a new value:`
@@ -89,7 +83,7 @@ async function elaborate() {
     if (newValue.trim()) {
       userTranslation = newValue.trim();
     } else {
-      userTranslation = proposalValue;
+      userTranslation = proposalText;
     }
     let outputLine = line.replace(REFERENCE, '').replace(TRANSLATE, '');
     outputLine = outputLine.replace(refValue, userTranslation);
@@ -97,20 +91,12 @@ async function elaborate() {
     return;
   }
 
-  inputStream.on('data', async (chunk) => {
-    await processData(chunk, outputStream);
-  });
-
   async function processData(chunk, outputStream) {
     const lines = chunk.split('\n');
     for (const line of lines) {
       //console.log(line);
       if (line.includes(VERIFY) && !line.includes(REFERENCE) && !exitFlag) {
         const keyValues = extractKeyValueFromString(line);
-        proposalValue = keyValues.value;
-        if (proposalValue && proposalValue.length > 0) {
-          proposalValue = proposalValue.substring(0, 131);
-        }
         exitFlag = keyValues.exitFlag;
         verifySentenceFound = true;
       } else if (line.includes(REFERENCE) && !exitFlag) {
@@ -120,16 +106,65 @@ async function elaborate() {
           );
           exitFlag = true;
         } else {
-          await processLine(line, proposalValue, outputStream);
+          await processLine(line, outputStream);
           proposalValue = '';
           verifySentenceFound = false;
         }
       } else if (line.includes(TRANSLATE) && !exitFlag) {
-        await processLine(line, '', outputStream);
+        await processLine(line, outputStream);
       } else {
         outputStream.write(`${line}\n`);
       }
     }
+  }
+  async function promptUser(currentOccurrence, totalOccurrences, cleanKey, refValue) {
+    const colors = {
+      green: '\x1b[32m',
+      yellow: '\x1b[33m',
+      orange: '\x1b[38;5;208m', // Replace 'blue' with 'orange'
+      reset: '\x1b[0m',
+    };
+
+    const occurrenceText = `Occurrence: ${currentOccurrence}/${totalOccurrences} - To exit and save just write "exit"`;
+    const keyText = `Key: ${colors.green}${cleanKey}${colors.reset}`;
+    const referenceText = `Reference: ${colors.yellow}${refValue}${colors.reset}`;
+    let proposalText = '';
+    let proposalTextFormatted = '';
+    if (dictObject[refValue]) {
+      proposalText = dictObject[refValue];
+      proposalTextFormatted = `${colors.orange}${proposalText}${colors.reset}`;
+    }
+
+    // Find the length of the longest string
+    const maxLength = Math.max(
+      occurrenceText.length,
+      keyText.length,
+      referenceText.length,
+      proposalText.length
+    );
+
+    const separator = '+'.padEnd(maxLength, '-');
+
+    const occurrenceLine = `| ${occurrenceText.padEnd(maxLength - 4)} |`;
+    const keyLine = `| ${keyText.padEnd(maxLength + 7 - 1)}|`;
+    const referenceLine = `| ${referenceText.padEnd(maxLength + 7 - 1)}|`;
+    const proposalLine = proposalText
+      ? `| ${proposalTextFormatted.padEnd(maxLength + 13 - 1)}|`
+      : '';
+
+    console.log(`\n`);
+    console.log(separator);
+    console.log(occurrenceLine);
+    console.log(separator);
+    console.log(keyLine);
+    console.log(separator);
+    console.log(referenceLine);
+    console.log(separator);
+    if (proposalLine) {
+      console.log(proposalLine);
+      console.log(separator);
+    }
+    return proposalText;
   }
 
   inputStream.on('end', () => {
@@ -153,5 +188,32 @@ async function elaborate() {
   }
 }
 
+function parseInputParams() {
+  const args = process.argv.slice(2);
+  if (args.length > 4) {
+    printHelp(functionName);
+    process.exit(1);
+  }
+  if (
+    args.length > 0 &&
+    typeof args[0] === 'string' &&
+    (args[0] === '-h' || args[0].includes('help'))
+  ) {
+    printHelp(functionName);
+    process.exit(1);
+  } else if (args.length > 0) {
+    language = args[0];
+    if (args.length > 1) {
+      inputFilePath = args[1];
+      if (args.length > 2) {
+        outputFilePath = args[2];
+        if (args.length == 4) {
+          dictFilePath = args[3];
+        }
+      }
+    }
+  }
+}
+parseInputParams();
 // Call the function with the path to your JSON file
-elaborate();
+translate(language, inputFilePath, outputFilePath, dictFilePath);

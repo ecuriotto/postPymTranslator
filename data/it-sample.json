@@ -1,0 +1,17 @@
+{
+  "common": {
+    "above": "sopra",
+    "add": "Aggiungere",
+    "addACopy": "Aggiungere una copia",
+    "modeler_PLEASETRANSLATETHESENTENCE": "Modeler",
+    "itemSelected": {
+      "importReportDashboard_PLEASETRANSLATETHESENTENCE": "Import report/dashboard",
+      "processDashboard_endedInLast7Days-description_PLEASETRANSLATETHESENTENCE": "This report counts all processes that ended in the last 7 days.",
+      "label": "elemento selezionato",
+      "label-plural": "elementi selezionati",
+      "privacyPolicy_PLEASEVERIFYTHESENTENCE": "politica sulla riservatezza",
+      "privacyPolicy_PLEASEVERIFYTHESENTENCE_REFERENCE": "Privacy policy"
+    },
+    "addDescription_PLEASETRANSLATETHESENTENCE": "Add description"
+  }
+}
